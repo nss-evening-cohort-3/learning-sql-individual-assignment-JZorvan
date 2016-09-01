@@ -5,7 +5,6 @@ SELECT Employee.FirstName || ' ' || Employee.LastName AS 'Sales Rep' FROM Invoic
 JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
 JOIN Employee ON Customer.SupportRepId = Employee.EmployeeId
 WHERE Invoice.InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31'
-GROUP BY Employee.LastName ORDER BY 'Total Sales' DESC LIMIT 1;
-
+GROUP BY Employee.LastName ORDER BY SUM (Invoice.Total) DESC LIMIT 1;
 
 
