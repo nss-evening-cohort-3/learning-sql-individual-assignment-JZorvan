@@ -6,7 +6,7 @@ This is a series of SQL 'drills' I used to learn and practice SQL statements.  W
 
 ## List of Queries
 
-Provide a query returning:
+Provide a query returning:  
 1. The full names, customer ID, and country for Customers who are not in the US.  
 2. Only the Customers from Brazil.  
 3. The Invoices of Customers who are from Brazil. The resultant table should show the Customer's full name, Invoice ID, Date of the invoice, and billing country.  
