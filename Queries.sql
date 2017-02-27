@@ -137,3 +137,55 @@ JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
 JOIN Employee ON Customer.SupportRepId = Employee.EmployeeId
 WHERE Invoice.InvoiceDate BETWEEN '2010-01-01' AND '2010-12-31'
 GROUP BY Employee.LastName ORDER BY SUM (Invoice.Total) DESC LIMIT 1;
+
+-- 21. Which sales agent made the most in sales over all?
+
+SELECT Employee.FirstName || ' ' || Employee.LastName AS 'Sales Rep' FROM Invoice
+JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
+JOIN Employee ON Customer.SupportRepId = Employee.EmployeeId
+WHERE Invoice.InvoiceDate
+GROUP BY Employee.LastName ORDER BY SUM (Invoice.Total) DESC LIMIT 1;
+
+-- 22. Provide a query that shows the # of customers assigned to each sales agent.
+
+SELECT Employee.FirstName || ' ' || Employee.LastName AS 'Sales Agent', (SELECT COUNT (Customer.SupportRepId)) AS 'Number of Customers' FROM Employee, Customer
+WHERE Employee.EmployeeId = Customer.SupportRepId
+GROUP BY Employee.LastName;
+
+-- 23. Provide a query that shows the total sales per country. Which country's customers spent the most?
+
+SELECT Customer.Country, (SELECT SUM (Invoice.Total)) AS 'Total Sales' FROM Invoice
+JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
+GROUP BY Customer.Country;
+
+-- 24. Provide a query that shows the most purchased track of 2013.
+
+SELECT Track.Name AS 'Track' FROM Track
+JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId
+JOIN Invoice ON InvoiceLine.InvoiceId = Invoice.InvoiceId
+WHERE Invoice.InvoiceDate LIKE '2013%'
+GROUP BY Track.Name
+ORDER BY COUNT (InvoiceLine.TrackId) DESC LIMIT 9;
+
+-- 25. Provide a query that shows the top 5 most purchased tracks over all.
+
+SELECT Track.Name AS 'Top Tracks' FROM Track
+JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId
+GROUP BY Track.Name ORDER BY COUNT (InvoiceLine.TrackId) DESC LIMIT 5;
+
+-- 26. Provide a query that shows the top 3 best selling artists.
+
+SELECT Artist.Name AS 'Top 3 Best-Selling Artists' FROM Artist
+JOIN Album ON Artist.ArtistId = Album.ArtistId
+JOIN Track ON Album.AlbumId = Track.AlbumId
+JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId
+GROUP BY Artist.Name
+ORDER BY COUNT (InvoiceLine.TrackId) DESC LIMIT 3;
+
+-- 27. Provide a query that shows the most purchased Media Type.
+
+SELECT MediaType.Name AS 'Most Purchased Media Type' FROM MediaType
+JOIN Track ON MediaType.MediaTypeId = Track.MediaTypeId
+JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId
+GROUP BY MediaType.Name
+ORDER BY COUNT (InvoiceLine.TrackId) DESC LIMIT 1;
