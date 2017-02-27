@@ -66,3 +66,74 @@ Answer:  $469.58
 SELECT COUNT (InvoiceLineId) AS '# of line items for Invoice 37' FROM InvoiceLine WHERE InvoiceId = 37;
 
 Answer:  4;
+
+-- 11. Looking at the InvoiceLine table, provide a query that COUNTs the number of line items for each Invoice.
+
+SELECT InvoiceId AS 'Invoice ID#', (SELECT COUNT (InvoiceLineId)) AS 'Number of Line Items'
+FROM InvoiceLine
+GROUP BY InvoiceId;
+
+-- 12. Provide a query that includes the track name with each invoice line item.
+
+SELECT InvoiceLine.InvoiceLineId AS 'Invoice Line #', Track.Name AS 'Track Name'
+FROM InvoiceLine
+JOIN Track
+ON InvoiceLine.TrackId = Track.TrackId
+ORDER BY InvoiceLine.InvoiceLineId;
+
+-- 13. Provide a query that includes the purchased track name AND artist name with each invoice line item.
+
+SELECT Track.Name AS 'Track', Artist.Name AS 'Artist', InvoiceLine.* FROM InvoiceLine
+JOIN Track ON InvoiceLine.TrackId = Track.TrackId
+JOIN Album ON Track.AlbumId = Album.AlbumId
+JOIN Artist ON Album.ArtistId = Artist.ArtistId;
+
+-- 14. Provide a query that shows the # of invoices per country.
+
+SELECT BillingCountry AS 'Country', (SELECT COUNT (BillingCountry)) AS '# of Invoices'
+FROM Invoice
+GROUP BY BillingCountry;
+
+-- 15. Provide a query that shows the total number of tracks in each playlist. The Playlist name should be include on the resulant table.
+
+SELECT Playlist.Name AS 'Playlist Name', (SELECT COUNT (PlaylistTrack.TrackId)) AS 'Number of Tracks'
+FROM Playlist
+JOIN PlaylistTrack
+ON PlaylistTrack.PlaylistId = Playlist.PlaylistId
+GROUP BY Playlist.PlaylistId;
+
+-- 16. Provide a query that shows all the Tracks, but displays no IDs. The resultant table should include the Album name, Media type and Genre.
+
+SELECT Genre.Name, Track.Name, Album.Title, Composer, MediaType.Name, Milliseconds, Bytes, UnitPrice FROM Track
+JOIN Genre ON Track.GenreId = Genre.GenreId
+JOIN Album ON Track.AlbumId = Album.AlbumId
+JOIN MediaType ON Track.MediaTypeId = MediaType.MediaTypeId;
+
+-- 17. Provide a query that shows all Invoices but includes the # of invoice line items.
+
+SELECT Invoice.*, (SELECT COUNT (InvoiceLine.InvoiceId)) AS '# of Line Items' FROM Invoice
+JOIN InvoiceLine WHERE Invoice.InvoiceId = InvoiceLine.InvoiceId
+GROUP BY Invoice.InvoiceId;
+
+-- 18. Provide a query that shows total sales made by each sales agent.
+
+SELECT Employee.FirstName || ' ' || Employee.LastName AS 'Sales Rep', (SELECT SUM (Invoice.Total)) AS 'Total Sales' FROM Invoice
+JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
+JOIN Employee ON Customer.SupportRepId = Employee.EmployeeId
+GROUP BY Employee.LastName;
+
+-- 19. Which sales agent made the most in sales in 2009?
+
+SELECT Employee.FirstName || ' ' || Employee.LastName AS 'Sales Rep' FROM Invoice
+JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
+JOIN Employee ON Customer.SupportRepId = Employee.EmployeeId
+WHERE Invoice.InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31'
+GROUP BY Employee.LastName ORDER BY SUM (Invoice.Total) DESC LIMIT 1;
+
+-- 20. Which sales agent made the most in sales in 2010?
+
+SELECT Employee.FirstName || ' ' || Employee.LastName AS 'Sales Rep' FROM Invoice
+JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
+JOIN Employee ON Customer.SupportRepId = Employee.EmployeeId
+WHERE Invoice.InvoiceDate BETWEEN '2010-01-01' AND '2010-12-31'
+GROUP BY Employee.LastName ORDER BY SUM (Invoice.Total) DESC LIMIT 1;
